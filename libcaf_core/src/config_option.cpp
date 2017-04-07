@@ -23,7 +23,7 @@
 
 namespace caf {
 
-const char* type_name_visitor_tbl[] {
+CAF_API const char* type_name_visitor_tbl[] {
   "a boolean", 
   "a float", 
   "a double",

@@ -26,6 +26,7 @@
 #include <vector>
 #include <cstdint>
 
+#include "caf/config.hpp"
 #include "caf/fwd.hpp"
 #include "caf/atom.hpp"
 #include "caf/timestamp.hpp"
@@ -110,7 +111,7 @@ static constexpr size_t type_nrs = detail::tl_size<sorted_builtin_types>::value
                                    + 1;
 
 /// List of all type names, indexed via `type_nr`.
-extern const char* numbered_type_names[];
+CAF_API extern const char* numbered_type_names[];
 
 template <uint32_t R, uint16_t... Is>
 struct type_token_helper;

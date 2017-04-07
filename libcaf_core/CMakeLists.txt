@@ -122,6 +122,7 @@ add_custom_target(libcaf_core)
 
 # build shared library if not compiling static only
 if (NOT CAF_BUILD_STATIC_ONLY)
+  add_definitions(-DCAF_CORE_BUILD_SHARED -DCAF_CORE_EXPORTS)
   add_library(libcaf_core_shared SHARED ${LIBCAF_CORE_SRCS} ${LIBCAF_CORE_HDRS})
   target_link_libraries(libcaf_core_shared ${LD_FLAGS})
   set_target_properties(libcaf_core_shared
@@ -129,12 +130,13 @@ if (NOT CAF_BUILD_STATIC_ONLY)
                         SOVERSION ${CAF_VERSION}
                         VERSION ${CAF_VERSION}
                         OUTPUT_NAME caf_core)
-  if (CYGWIN)
-    install(TARGETS libcaf_core_shared RUNTIME DESTINATION bin)
-  elseif (NOT WIN32)
-    install(TARGETS libcaf_core_shared LIBRARY DESTINATION lib)
-  endif()
+  install(TARGETS libcaf_core_shared
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+  )
   add_dependencies(libcaf_core_shared libcaf_core)
+  add_definitions(-DCAF_CORE_BUILD_SHARED -DCAF_CORE_EXPORTS)
 endif ()
 
 # build static library only if --build-static or --build-static-only was set
@@ -142,9 +144,7 @@ if (CAF_BUILD_STATIC_ONLY OR CAF_BUILD_STATIC)
   add_library(libcaf_core_static STATIC ${LIBCAF_CORE_HDRS} ${LIBCAF_CORE_SRCS})
   target_link_libraries(libcaf_core_static ${LD_FLAGS})
   set_target_properties(libcaf_core_static PROPERTIES OUTPUT_NAME caf_core_static)
-  if(NOT WIN32)
-    install(TARGETS libcaf_core_static ARCHIVE DESTINATION lib)
-  endif()
+  install(TARGETS libcaf_core_static ARCHIVE DESTINATION lib)
   add_dependencies(libcaf_core_static libcaf_core)
 endif ()
 

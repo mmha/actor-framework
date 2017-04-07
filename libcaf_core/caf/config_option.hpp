@@ -39,7 +39,7 @@
 
 namespace caf {
 
-extern const char* type_name_visitor_tbl[];
+CAF_API extern const char* type_name_visitor_tbl[];
 
 /// Helper class to generate config readers for different input types.
 class config_option {

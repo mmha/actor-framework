@@ -9,10 +9,13 @@ if(APPLE AND NOT DEFINED CMAKE_MACOSX_RPATH)
   set(CMAKE_MACOSX_RPATH true)
 endif()
 
-# shared libs currently not supported on Windows
-if(WIN32 AND NOT CAF_BUILD_STATIC_ONLY)
-  message(STATUS "CAF currently only supports static-only builds on Windows")
-  set(CAF_BUILD_STATIC_ONLY yes)
+if(WIN32)
+  if("${CMAKE_VERSION}" VERSION_GREATER 3.4.0)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+  elseif(NOT CAF_BUILD_STATIC_ONLY)
+    message(STATUS "Please upgrade to CMake 3.4 to build DLLs. Building static libraries instead.")
+    set(CAF_BUILD_STATIC_ONLY yes)
+  endif()
 endif()
 
 ################################################################################

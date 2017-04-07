@@ -53,7 +53,7 @@
 
 namespace caf {
 
-const char* numbered_type_names[] = {
+CAF_API const char* numbered_type_names[] = {
   "@actor",
   "@actorvec",
   "@addr",
