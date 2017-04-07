@@ -158,7 +158,7 @@ public:
   virtual bool await_value(bool reset_timeout) = 0;
   virtual mailbox_element& value() = 0;
   virtual void advance() = 0;
-  virtual void erase_and_advance() = 0;
+  virtual void erase(bool advance) = 0;
 };
 
 class cached_sequence : public message_sequence {
@@ -184,9 +184,10 @@ public:
     i_ = advance_impl(i_.next());
   }
 
-  void erase_and_advance() override {
+  void erase(bool advance) override {
     CAF_ASSERT(i_->marked);
-    i_ = advance_impl(cache_.erase(i_));
+    if (advance)
+      i_ = advance_impl(cache_.erase(i_));
   }
 
   bool await_value(bool) override {
@@ -234,9 +235,11 @@ public:
     next_timeout();
   }
 
-  void erase_and_advance() override {
-    ptr_.reset();
-    next_timeout();
+  void erase(bool advance) override {
+    if (advance) {
+      ptr_.reset();
+      next_timeout();
+    }
   }
 
   bool await_value(bool reset_timeout) override {
@@ -292,8 +295,8 @@ public:
     ptr_->advance();
   }
 
-  void erase_and_advance() override {
-    ptr_->erase_and_advance();
+  void erase(bool advance) override {
+    ptr_->erase(advance);
   }
 
   bool await_value(bool reset_timeout) override {
@@ -308,7 +311,6 @@ private:
   pointer ptr_;
   pointer fallback_;
 };
-
 } // namespace <anonymous>
 
 void blocking_actor::receive_impl(receive_cond& rcc,
@@ -396,12 +398,14 @@ void blocking_actor::receive_impl(receive_cond& rcc,
         }
       }
     } while (skipped && !timed_out);
-    if (timed_out)
+    bool post_condition = rcc.post();
+    if (timed_out) {
       bhvr.handle_timeout();
-    else
-      seq.erase_and_advance();
+    } else {
+      seq.erase(post_condition);
+    }
     // check loop post condition
-    if (!rcc.post())
+    if (!post_condition)
       return;
   }
 }
