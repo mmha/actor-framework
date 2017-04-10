@@ -111,7 +111,7 @@ static constexpr size_t type_nrs = detail::tl_size<sorted_builtin_types>::value
                                    + 1;
 
 /// List of all type names, indexed via `type_nr`.
-CAF_API extern const char* numbered_type_names[];
+CAF_EXPORT_SYMBOL extern const char* numbered_type_names[];
 
 template <uint32_t R, uint16_t... Is>
 struct type_token_helper;

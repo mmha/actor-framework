@@ -23,7 +23,7 @@
 
 namespace caf {
 
-CAF_API const char* type_name_visitor_tbl[] {
+CAF_EXPORT_SYMBOL const char* type_name_visitor_tbl[] {
   "a boolean", 
   "a float", 
   "a double",
